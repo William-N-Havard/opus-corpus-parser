@@ -106,7 +106,7 @@ def main():
                         help='Post-process each sentence with a user-specified function (to be found in detokenizer.py)\
                         \n (e. g. --transform="default, en" will first transform each sentence using "default" function \
                         in detokenizer.py and will then process each sentence using the "en" function)')
-    parser.add_argument('--verbose', action="store_true", default=True,
+    parser.add_argument('--verbose', action="store_true", default=False,
                         help='Increase verbosity')
 
     args = parser.parse_args()
@@ -119,7 +119,7 @@ def main():
     # setting up names
     dataset_bare_filename = _get_bare_filename(_filename_from_URL(dataset_url))
     dataset_filename = _get_filename(_filename_from_URL(dataset_url))
-    final_outdir = os.path.join(outdir, dataset_bare_filename+'/')
+    final_outdir = os.path.join(outdir, dataset_bare_filename)
     final_outname = os.path.join(final_outdir, dataset_filename)
 
     # create outdir
@@ -149,7 +149,7 @@ def main():
             for i_, gz_file in enumerate(file_list):
                 i_ += 1
                 if verbose:
-                    print("[{}/{}] Processing file {} ...".format(i_, nb_files, _get_bare_filename(gz_file)))
+                    print("[{}/{}]({} errors) Processing file {} ...".format(i_, nb_files, len(errors), _get_bare_filename(gz_file)))
                 # Get data
                 compressed_gz_file = zipped_data.extractfile(gz_file)
                 gz_data = get_gz_data(compressed_gz_file)
@@ -163,7 +163,7 @@ def main():
         if errors!=[]:
             print('Warning: could not process the following files:')
             for e_files in errors:
-                print('\t', e_files)
+                print('\t{}'.format(e_files))
 
     elif ext == '.xml.gz':
         print('Error: Wrong file format! As for now, this program\
