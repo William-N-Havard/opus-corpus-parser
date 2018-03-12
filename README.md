@@ -17,7 +17,7 @@ python[2.7|3] opus-corpus-parser.py URL --outdir='./my-outdir' --ext='.txt' --tr
 **--ext**: Extension that will be given to the processed files
 
 **--tranform**: Post-process each sentence with a user-specified function (to be found in [detokenizer.py](detokenizer.py).
-(e. g. --transform="my_fct, en" will first transform each sentence using "my_fct" in [detokenizer.py](detokenizer.py) and will then process each sentence using the "en" function)
+(e. g. --transform="en, rm_commentary" will first transform each sentence using "en" in [detokenizer.py](detokenizer.py) and will then process each sentence using the user-defined function "rm_commentary")
 
 **--verbose**: Increase verbosity
 
