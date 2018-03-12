@@ -12,7 +12,7 @@ python[2.7|3] opus-corpus-parser.py URL --outdir='./my-outdir' --ext='.txt' --tr
 
 **URL**: URL of file to be downloaded (e. g. http://opus.nlpl.eu/download.php?f=OpenSubtitles/ro.tar.gz)
 
-**--outdir**: Path where processed files will be saved
+**--outdir**: Path where processed files will be saved. If not path is provided, path name will be derived automatically
 
 **--ext**: Extension that will be given to the processed files
 
