@@ -8,7 +8,10 @@
 
 import re
 
-def en(text):
+def en(token_list):
+    # merge tokens
+    text = ' '.join(token_list)
+
     remove_double_spaces = re.compile(r' +')
     remove_space_before_punct = re.compile(r" ([,.:;?!'])")
 
@@ -22,8 +25,12 @@ def en(text):
     text = remove_space_before_punct.sub(r'\1', text)
     return text
 
-def transform(sentences_as_list, postprocess):
+def tokens_as_str(token_list):
+    return ' '.join(token_list)
+
+def transform(sentences_as_token_list, postprocess):
     for process in postprocess.split(','):
-        for i, sentence in enumerate(sentences_as_list):
-            sentences_as_list[i]=globals()[process](sentences_as_list[i])
-    return sentences_as_list
+        for i, sentence in enumerate(sentences_as_token_list):
+            process = process.strip()
+            sentences_as_token_list[i]=globals()[process](sentences_as_token_list[i])
+    return sentences_as_token_list
