@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 #-*- coding: utf8 -*-
 
-# Created by William N. Havard (william.havard@gmail.com)
+# Created by William N. Havard - william.havard@gmail.com
+# PhD Student at LIDILEM and LIG/GETALP
+#
 # Date created: 09/03/2018
 # Date last modified: 12/03/2018
-# PhD Student at LIDILEM and LIG/GETALP
+#
+# Python 2 and 3 compatible :)
 
 import os
 import gzip
@@ -13,8 +16,13 @@ import argparse
 import detokenizer
 from pprint import pprint
 import xml.etree.ElementTree as ET
-from urllib.request import urlretrieve as download
-from urllib.parse import urlparse, parse_qs
+# Python 2.7/3 compatibility
+try:
+    from urllib.request import urlretrieve as download
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urllib import urlretrieve as download
+    from urlparse import urlparse, parse_qs
 
 
 # Utils
@@ -51,34 +59,37 @@ def _get_extensions(path):
 def parse_xml(xml_data):
     sentences = []
     root = ET.fromstring(xml_data)
-    for sentence in root.findall('s'):
-        sentences.append(' '.join([token.text for token in sentence.iter(tag='w')]))
+    for sentence in root.iter('s'):
+        sentences.append([token.text for token in sentence.iter(tag='w')])
     return sentences
 
 
 def get_gz_data(gz):
-    with gzip.open(gz, 'r') as read_gz_file:
+    with gzip.GzipFile(fileobj=gz) as read_gz_file:
         return read_gz_file.read().decode('utf8', 'ignore')
 
 
-def process_gz_file(data, xml_outdir, postprocess):
+def process_gz_file(data, xml_outdir, postprocess): 
     # Create dir if necessary
     if not os.path.exists(_get_path(xml_outdir)):
         os.makedirs(_get_path(xml_outdir))
 
     # Process file and dump data
-    with open(xml_outdir, 'w') as write_xml:
-        parsed_xml = parse_xml(data)
-        sentences = process_sentences(parsed_xml, postprocess)
-        for sentence in sentences:
-            write_xml.write(sentence+"\n")
+    try:
+        with open(xml_outdir, 'wb') as write_xml:
+            parsed_xml = parse_xml(data.encode('utf8'))
+            sentences = process_sentences(parsed_xml, postprocess)
+            for sentence in sentences:
+                write_xml.write(sentence.encode('utf8')+b'\n')
+        return None
+    except:
+        return xml_outdir       
 
 
-def process_sentences(sentences_as_list, postprocess):
-    if postprocess != None:
-        return detokenizer.transform(sentences_as_list, postprocess)
-    else:
-        return sentences_as_list
+def process_sentences(sentences_as_token_list, postprocess):
+    if postprocess == None:
+        postprocess = 'tokens_as_str'
+    return detokenizer.transform(sentences_as_token_list, postprocess)
 
 
 def main():
@@ -129,6 +140,7 @@ def main():
 
     # Open .tar file
     ext = _get_extensions(dataset_filename)
+    errors = []
     if ext == '.tar.gz':
         with tarfile.open(final_outname, 'r') as zipped_data:
             # List .gz files
@@ -145,7 +157,13 @@ def main():
                 path_ = os.path.join(final_outdir, _get_path(gz_file))
                 xml_outdir = os.path.join(path_, _get_bare_filename(gz_file)+suffix)
                 # Parse XML and dump data
-                process_gz_file(gz_data, xml_outdir, transform)
+                e=process_gz_file(gz_data, xml_outdir, transform)
+                if e != None: errors.append(e)
+
+        if errors!=[]:
+            print('Warning: could not process the following files:')
+            for e_files in errors:
+                print('\t', e_files)
 
     elif ext == '.xml.gz':
         print('Error: Wrong file format! As for now, this program\
@@ -160,4 +178,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
