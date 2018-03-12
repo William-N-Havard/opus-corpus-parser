@@ -1,7 +1,7 @@
 # opus-corpus-parser
 Download, parse and postprocess any Opus monolingual file. **Python 2.7 and 3 compatible** (significantly slower with Python 2.7 though)
 
-This Python script allows you to download, extract and postprocess any monolingual file from the [Opus Database](http://opus.nlpl.eu/index.php). Each file in the .tar.gz file is extracted and read into memory so that no temporary file is created. The XML file is then parsed and raw text is outputed in a .txt file. The original .tar.gz directory structure is kept unchanged.
+This Python script allows you to download, extract and postprocess any monolingual file from the [Opus Database](http://opus.nlpl.eu/index.php). Each file in the .tar.gz file is extracted and read into memory so that no temporary file is created. The XML file is then parsed and its corresponding raw text is outputed in a .txt file. The original .tar.gz directory structure is kept unchanged.
 
 The user can specify its own processing functions, which make the processing operation language independent. As for now, only a basic English detokenizer has been provided. 
 
@@ -12,7 +12,7 @@ python[2.7|3] opus-corpus-parser.py URL --outdir='./my-outdir' --ext='.txt' --tr
 
 **URL**: URL of file to be downloaded (e. g. http://opus.nlpl.eu/download.php?f=OpenSubtitles/ro.tar.gz)
 
-**--outdir**: Path where processed files will be saved. If not path is provided, path name will be derived automatically
+**--outdir**: Path where processed files will be saved. If no path is provided, path name will be derived automatically
 
 **--ext**: Extension that will be given to the processed files
 
