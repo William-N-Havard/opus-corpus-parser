@@ -7,7 +7,7 @@
 # Date created: 09/03/2018
 # Date last modified: 12/03/2018
 #
-# Python 2.7 and 3 compatible :)
+# Python 2 and 3 compatible :)
 
 import os
 import gzip
@@ -28,26 +28,46 @@ except ImportError:
 # Utils
 
 def _filename_from_URL(url_):
+    """
+    :url_: URL
+    :return: query part of the URL, corresponding to the name of the corpus
+    """
     parsed_url = urlparse(url_)
     parsed_query = parse_qs(parsed_url.query)
     return parsed_query['f'][0]
 
 
 def _get_path(path):
+    """
+    :path: path-like string
+    :return: path w/o filename
+    """
     return os.path.split(path)[0]
 
 
 def _get_bare_filename(path):
+    """
+    :path: path-like string
+    :return: filename w/o extensions (e.g. removes .xml.gz and not only .gz)
+    """
     while '.' in path:
         path = os.path.splitext(os.path.basename(path))[0]
     return path
 
 
 def _get_filename(path):
+    """
+    :path: path-like string
+    :return: filename
+    """
     return os.path.basename(path)
 
 
 def _get_extensions(path):
+    """
+    :path: path-like string
+    :return: list of extensions (e.g. returns .xml.gz and not only .gz)
+    """
     ext = []
     while '.' in path:
         ext.append(os.path.splitext(os.path.basename(path))[1])
@@ -57,6 +77,10 @@ def _get_extensions(path):
 #
 
 def parse_xml(xml_data):
+    """
+    :xml_data: XML string
+    :return: list of list of tokens)
+    """
     sentences = []
     root = ET.fromstring(xml_data)
     for sentence in root.iter('s'):
@@ -65,11 +89,21 @@ def parse_xml(xml_data):
 
 
 def get_gz_data(gz):
+    """
+    :gz: gz file as string
+    :return: decompressed gz file as string
+    """
     with gzip.GzipFile(fileobj=gz) as read_gz_file:
         return read_gz_file.read().decode('utf8', 'ignore')
 
 
-def process_gz_file(data, xml_outdir, postprocess): 
+def process_gz_file(data, xml_outdir, postprocess):
+    """
+    :data: list of list of tokens
+    :xml_outdir: output directory
+    :postprocess: list of postprocessing function to be applied
+    :return: None if everything is OK, else filename
+    """ 
     # Create dir if necessary
     if not os.path.exists(_get_path(xml_outdir)):
         os.makedirs(_get_path(xml_outdir))
@@ -87,6 +121,11 @@ def process_gz_file(data, xml_outdir, postprocess):
 
 
 def process_sentences(sentences_as_token_list, postprocess):
+    """
+    :sentences_as_token_list: list of list of tokens
+    :postprocess: list of postprocessing function to be applied
+    :return: the transformed sentences
+    """
     if postprocess == None:
         postprocess = 'tokens_as_str'
     return detokenizer.transform(sentences_as_token_list, postprocess)
