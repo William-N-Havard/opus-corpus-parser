@@ -7,7 +7,7 @@
 # Date created: 09/03/2018
 # Date last modified: 12/03/2018
 #
-# Python 2 and 3 compatible :)
+# Python 2.7 and 3 compatible :)
 
 import os
 import gzip
@@ -98,7 +98,7 @@ def main():
     parser.add_argument('URL',
                         help='URL of file to be downloaded\
                              (e. g. http://opus.nlpl.eu/download.php?f=OpenSubtitles/ro.tar.gz)')
-    parser.add_argument('--outdir', default="./",
+    parser.add_argument('--outdir', default=None,
                         help='Path where processed files will be saved')
     parser.add_argument('--ext', default=".txt",
                         help='Extension that will be given to the processed files')
@@ -115,7 +115,10 @@ def main():
     verbose = args.verbose
     suffix = args.ext
     transform = args.transform
-
+    
+    if outdir == None:
+        outdir = os.path.join('./', _get_path(_filename_from_URL(dataset_url)))    
+    
     # setting up names
     dataset_bare_filename = _get_bare_filename(_filename_from_URL(dataset_url))
     dataset_filename = _get_filename(_filename_from_URL(dataset_url))
