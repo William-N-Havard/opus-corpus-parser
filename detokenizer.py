@@ -13,8 +13,8 @@ def en(token_list):
     text = ' '.join(token_list)
 
     remove_double_spaces = re.compile(r' +')
-    remove_space_before_punct = re.compile(r' ([,.:;?!\'`/\(\)\[\]])')
-    remove_space_after_punct = re.compile(r'([\'`/\(\)\[\]]) ')
+    remove_space_before_punct = re.compile(r' ([,.:;?!\'/\)\]])')
+    remove_space_after_punct = re.compile(r'([\'/\(\]]) ')
     remove_inner_spaces = re.compile(r'" (.+?) "')
 
     text = text.strip()   
@@ -31,7 +31,7 @@ def rm_commentary(sentence):
     if len(sentence)!=0 and sentence[0] not in begin_ and sentence[-1] not in end_:
         return sentence
     else:
-        return None
+        return ''
 
 def tokens_as_str(token_list):
     return ' '.join(token_list)
@@ -41,4 +41,4 @@ def transform(sentences_as_token_list, postprocess):
         process = process.strip()
         for i, sentence in enumerate(sentences_as_token_list):
             sentences_as_token_list[i]=globals()[process](sentences_as_token_list[i])
-    return [x for x in sentences_as_token_list if x is not None]
+    return [x for x in sentences_as_token_list if x!='']
