@@ -7,7 +7,7 @@ The user can specify its own processing functions, which make the processing ope
 
 # Usage
 ```
-python[2.7|3] opus-corpus-parser URL --outdir='./my-outdir' --ext='.txt' --transform='en' --verbose
+python[2.7|3] opus-corpus-parser.py URL --outdir='./my-outdir' --ext='.txt' --transform='en' --verbose
 ```
 
 **URL**: URL of file to be downloaded (e. g. http://opus.nlpl.eu/download.php?f=OpenSubtitles/ro.tar.gz)
